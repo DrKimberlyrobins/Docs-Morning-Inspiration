@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+<title>Doc's Morning Inspiration</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #101820;
+  color: white;
+  font-family: Georgia, serif;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 450px;
+  padding: 10px;
+  text-align: center;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 15px;
+  background: linear-gradient(
+    to bottom,
+    #172746 0%,
+    #86576a 27%,
+    #f4a65b 48%,
+    #ffd28a 58%,
+    #547d91 59%,
+    #142f4d 100%
+  );
+}
+
+/* THE SUN */
+
+.sun {
+  position: absolute;
+  width: 145px;
+  height: 145px;
+  border-radius: 50%;
+  background: #ffe5a1;
+  box-shadow:
+    0 0 45px #ffcf72,
+    0 0 110px #ffa94d;
+  left: 50%;
+  top: 51%;
+  transform: translate(-50%, -50%);
+  animation: sunrise 70s linear forwards;
+}
+
+@keyframes sunrise {
+  from {
+    top: 59%;
+  }
+  to {
+    top: 33%;
+  }
+}
+
+/* MOVING CLOUDS */
+
+.cloud {
+  position: absolute;
+  width: 190px;
+  height: 32px;
+  background: rgba(255,235,210,.22);
+  filter: blur(17px);
+  border-radius: 50%;
+  animation: drift 35s linear infinite alternate;
+}
+
+.cloud1 {
+  top: 19%;
+  left: -60px;
+}
+
+.cloud2 {
+  top: 36%;
+  left: 160px;
+  animation-duration: 48s;
+}
+
+@keyframes drift {
+  from {
+    transform: translateX(-65px);
+  }
+  to {
+    transform: translateX(100px);
+  }
+}
+
+/* WATER */
+
+.water {
+  position: absolute;
+  top: 59%;
+  width: 100%;
+  height: 41%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,194,107,.55),
+    #315e77 38%,
+    #10263f 100%
+  );
+}
+
+.reflection {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 35%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,236,170,.85),
+    transparent
+  );
+  filter: blur(15px);
+  animation: shimmer 3s ease-in-out infinite alternate;
+}
+
+@keyframes shimmer {
+  from {
+    width: 55px;
+    opacity: .4;
+  }
+  to {
+    width: 120px;
+    opacity: .85;
+  }
+}
+
+/* TEXT */
+
+.brand {
+  position: absolute;
+  top: 5%;
+  width: 100%;
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: #fff0cc;
+  text-shadow: 1px 2px 5px #172746;
+}
+
+.message {
+  position: absolute;
+  top: 19%;
+  left: 7%;
+  width: 86%;
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: clamp(23px, 6vw, 32px);
+  line-height: 1.45;
+  font-weight: bold;
+  text-shadow: 2px 3px 8px #182435;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+.message.show {
+  opacity: 1;
+}
+
+.footer {
+  position: absolute;
+  bottom: 5%;
+  width: 100%;
+  font-size: 17px;
+  letter-spacing: 2px;
+  color: #ffe6b5;
+  text-shadow: 1px 2px 5px black;
+}
+
+.controls {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #eebd72;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ffe0a5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="scene" id="scene">
+
+    <div class="sun"></div>
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <div class="water"></div>
+    <div class="reflection"></div>
+
+    <div class="brand">
+      DOC'S MORNING INSPIRATION
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div class="footer">
+      TRUST GOD • PROTECT YOUR PEACE
+    </div>
+
+  </div>
+
+  <div class="controls">
+    <button onclick="startVideo()">Play</button>
+    <button onclick="pauseVideo()">Pause</button>
+    <button onclick="restartVideo()">Restart</button>
+  </div>
+
+</div>
+
+<script>
+
+const messages = [
+  "GOOD MORNING",
+
+  "BE AWARE OF<br>YOUR SURROUNDINGS",
+
+  "Not every distraction<br>deserves your attention.",
+
+  "Not every situation<br>deserves your energy.",
+
+  "Pay attention to what<br>brings you peace.",
+
+  "Recognize what quietly<br>takes your peace away.",
+
+  "Sometimes protecting<br>your peace means<br>paying attention.",
+
+  "Recognize what is<br>happening around you<br>before it affects<br>what is within you.",
+
+  "STAY ALERT.<br>TRUST GOD.<br>PROTECT YOUR PEACE."
+];
+
+const duration = 70000;
+const messageTime = duration / messages.length;
+
+let elapsed = 0;
+let startTime = null;
+let timer = null;
+let playing = false;
+
+const message = document.getElementById("message");
+
+function displayMessage(index) {
+  message.classList.remove("show");
+
+  setTimeout(() => {
+    if (!playing) return;
+
+    message.innerHTML = messages[index];
+    message.classList.add("show");
+  }, 300);
+}
+
+function update() {
+  if (!playing) return;
+
+  elapsed = Date.now() - startTime;
+
+  if (elapsed >= duration) {
+    elapsed = duration;
+    pauseVideo();
+    return;
+  }
+
+  const index = Math.min(
+    Math.floor(elapsed / messageTime),
+    messages.length - 1
+  );
+
+  if (index !== update.lastIndex) {
+    update.lastIndex = index;
+    displayMessage(index);
+  }
+}
+
+function startVideo() {
+  if (playing) return;
+
+  if (elapsed >= duration) {
+    restartVideo();
+    return;
+  }
+
+  playing = true;
+  startTime = Date.now() - elapsed;
+
+  document.querySelectorAll(
+    ".sun, .cloud, .reflection"
+  ).forEach(el => {
+    el.style.animationPlayState = "running";
+  });
+
+  update();
+  timer = setInterval(update, 100);
+}
+
+function pauseVideo() {
+  if (!playing) return;
+
+  elapsed = Math.min(
+    Date.now() - startTime,
+    duration
+  );
+
+  playing = false;
+  clearInterval(timer);
+
+  document.querySelectorAll(
+    ".sun, .cloud, .reflection"
+  ).forEach(el => {
+    el.style.animationPlayState = "paused";
+  });
+}
+
+function restartVideo() {
+  clearInterval(timer);
+
+  playing = false;
+  elapsed = 0;
+  update.lastIndex = -1;
+
+  message.classList.remove("show");
+
+  const scene = document.getElementById("scene");
+
+  const animated = scene.querySelectorAll(
+    ".sun, .cloud, .reflection"
+  );
+
+  animated.forEach(el => {
+    el.style.animation = "none";
+    void el.offsetWidth;
+    el.style.animation = "";
+  });
+
+  startVideo();
+}
+
+/* Keep scenery still until Play is pressed. */
+
+document.querySelectorAll(
+  ".sun, .cloud, .reflection"
+).forEach(el => {
+  el.style.animationPlayState = "paused";
+});
+
+</script>
+
+</body>
+</html>
